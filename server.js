@@ -11,9 +11,26 @@ const likesRouter = require('./routes/likes');
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Разрешённые домены
+const allowedOrigins = [
+  'http://localhost:5173',           // локальная разработка
+  'https://cyberedue.netlify.app'    // твой фронтенд на Netlify
+];
+
+// Настройка CORS
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API маршруты
 app.use('/api/login', loginRoute);
@@ -23,9 +40,8 @@ app.use('/api', postRoutes);
 app.use('/api', lessonRoutes);
 app.use('/api/likes', likesRouter);
 
-const likesRoutes = require("./routes/likes");
-app.use("/api/likes", likesRoutes);
-
+// Роут для лайков/дизлайков
+const db = require('./db'); // убедись, что ты подключаешь db
 app.get("/api/lessons/:id", async (req, res) => {
   const { id } = req.params;
   const result = await db.query(
@@ -38,7 +54,7 @@ app.get("/api/lessons/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// Статика (frontend React сборка)
+// Статика (React build)
 app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
 // React Router SPA поддержка
