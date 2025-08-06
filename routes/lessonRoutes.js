@@ -1,28 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const db = require("../db");
 
-// Получение статистики по уроку
-router.get("/lessons/:id", async (req, res) => {
-  const lessonId = req.params.id;
+// Получить данные урока: количество лайков и дизлайков
+router.get("/:lessonId", async (req, res) => {
+  const { lessonId } = req.params;
 
   try {
-    const likesRes = await pool.query(
+    const likes = await db.query(
       "SELECT COUNT(*) FROM likes WHERE lesson_id = $1 AND liked = true",
       [lessonId]
     );
-    const dislikesRes = await pool.query(
+    const dislikes = await db.query(
       "SELECT COUNT(*) FROM likes WHERE lesson_id = $1 AND liked = false",
       [lessonId]
     );
 
     res.json({
-      likesCount: parseInt(likesRes.rows[0].count, 10),
-      dislikesCount: parseInt(dislikesRes.rows[0].count, 10),
+      likesCount: parseInt(likes.rows[0].count),
+      dislikesCount: parseInt(dislikes.rows[0].count),
     });
   } catch (err) {
-    console.error("Ошибка при получении статистики урока:", err);
-    res.status(500).json({ message: "Ошибка сервера" });
+    console.error("Ошибка получения данных урока:", err);
+    res.sendStatus(500);
   }
 });
 

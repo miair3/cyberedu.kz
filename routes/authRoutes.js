@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
+require('dotenv').config();
 
 const router = express.Router();
 const SECRET_KEY = 'your_secret_key';
@@ -16,7 +17,7 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: 'Неверный пароль' });
 
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JSON_SECRET, { expiresIn: '1h' });
 
     res.json({ message: 'Успешный вход', token , user: user});
   } catch (err) {

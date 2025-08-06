@@ -11,7 +11,8 @@ const postRouter = require('./routes/postRoutes');
 const likesRouter = require('./routes/likes');
 const gamesRoute = require('./routes/games');
 const notesRoutes = require('./routes/notes');
-
+const commentsRouter = require('./routes/comments');
+const lessonRoutes = require("./routes/lessonRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3030;
@@ -19,7 +20,6 @@ const PORT = process.env.PORT || 3030;
 // Статические файлы
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/uploads', express.static('uploads'));
-
 
 // CORS
 app.use(cors({
@@ -46,10 +46,11 @@ app.use(express.json());
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', postRouter);
-app.use('/api', likesRouter);
+app.use('/api/likes', likesRouter);
+app.use('/api/notes', notesRoutes);
+app.use('/api/comments', commentsRouter);
+app.use("/api/lessons", lessonRoutes);
 app.use('/games', gamesRoute);
-app.use('/api', notesRoutes);
-
 
 // Запуск сервера
 app.listen(PORT, () => {
