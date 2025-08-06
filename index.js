@@ -10,6 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const postRouter = require('./routes/postRoutes');
 const likesRouter = require('./routes/likes');
 const gamesRoute = require('./routes/games');
+const notesRoutes = require('./routes/notes');
 
 
 const app = express();
@@ -45,8 +46,9 @@ app.use(express.json());
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', postRouter);
-app.use('/api/likes', likesRouter);
+app.use('/api', likesRouter);
 app.use('/games', gamesRoute);
+app.use('/api', notesRoutes);
 
 
 // Запуск сервера
