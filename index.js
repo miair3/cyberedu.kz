@@ -11,11 +11,14 @@ const postRouter = require('./routes/postRoutes');
 const likesRouter = require('./routes/likes');
 const gamesRoute = require('./routes/games');
 
+
 const app = express();
 const PORT = process.env.PORT || 3030;
 
 // Статические файлы
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use('/uploads', express.static('uploads'));
+
 
 // CORS
 app.use(cors({
@@ -44,6 +47,7 @@ app.use('/api', userRoutes);
 app.use('/api', postRouter);
 app.use('/api/likes', likesRouter);
 app.use('/games', gamesRoute);
+
 
 // Запуск сервера
 app.listen(PORT, () => {
